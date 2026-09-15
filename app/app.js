@@ -6,22 +6,12 @@
  * au serveur FHIR configuré dans config.js (généré par scripts/seed_patient.py).
  */
 
-const CONFIG = window.APP_CONFIG || {
-  fhirBase: "https://hapi.fhir.org/baseR4",
-  defaultPatientId: "",
-  conceptMapId: "snomed-to-cim10-problems",
-};
+const CONFIG = window.APP_CONFIG || { fhirBase: "https://hapi.fhir.org/baseR4", defaultPatientId: "", conceptMapId: "snomed-to-cim10-problems" };
 
 const CODE_SYSTEMS = {
-  "http://snomed.info/sct": {
-    oid: "2.16.840.1.113883.6.96",
-    name: "SNOMED CT",
-  },
+  "http://snomed.info/sct": { oid: "2.16.840.1.113883.6.96", name: "SNOMED CT" },
   "http://loinc.org": { oid: "2.16.840.1.113883.6.1", name: "LOINC" },
-  "http://hl7.org/fhir/sid/icd-10": {
-    oid: "2.16.840.1.113883.6.3",
-    name: "ICD-10 / CIM-10",
-  },
+  "http://hl7.org/fhir/sid/icd-10": { oid: "2.16.840.1.113883.6.3", name: "ICD-10 / CIM-10" },
 };
 
 const state = {
@@ -80,13 +70,11 @@ async function fhirFetch(path) {
   const url = path.startsWith("http") ? path : `${CONFIG.fhirBase}${path}`;
   let response;
   try {
-    response = await fetch(url, {
-      headers: { Accept: "application/fhir+json" },
-    });
+    response = await fetch(url, { headers: { Accept: "application/fhir+json" } });
   } catch (networkError) {
     logExchange("GET", url, "ERR", false);
     throw new Error(
-      `Impossible de contacter le serveur FHIR (${CONFIG.fhirBase}). Vérifiez la connexion réseau.`,
+      `Impossible de contacter le serveur FHIR (${CONFIG.fhirBase}). Vérifiez la connexion réseau.`
     );
   }
 
@@ -101,10 +89,7 @@ async function fhirFetch(path) {
 
   if (!response.ok) {
     const diagnostics = body?.issue?.[0]?.diagnostics;
-    throw new Error(
-      diagnostics ||
-        `Le serveur FHIR a répondu avec le statut ${response.status}.`,
-    );
+    throw new Error(diagnostics || `Le serveur FHIR a répondu avec le statut ${response.status}.`);
   }
   return body;
 }
@@ -119,26 +104,15 @@ function resolveReference(bundle, reference) {
   if (match) return match.resource;
   // fallback : référence de type "ResourceType/id"
   const [type, id] = reference.split("/");
-  return (
-    bundle.entry?.find(
-      (e) => e.resource?.resourceType === type && e.resource?.id === id,
-    )?.resource || null
-  );
+  return bundle.entry?.find((e) => e.resource?.resourceType === type && e.resource?.id === id)?.resource || null;
 }
 
 function getComposition(bundle) {
-  return (
-    bundle.entry?.find((e) => e.resource?.resourceType === "Composition")
-      ?.resource || null
-  );
+  return bundle.entry?.find((e) => e.resource?.resourceType === "Composition")?.resource || null;
 }
 
 function getResourcesByType(bundle, type) {
-  return (
-    bundle.entry
-      ?.filter((e) => e.resource?.resourceType === type)
-      .map((e) => e.resource) || []
-  );
+  return bundle.entry?.filter((e) => e.resource?.resourceType === type).map((e) => e.resource) || [];
 }
 
 function firstCoding(codeableConcept) {
@@ -147,9 +121,7 @@ function firstCoding(codeableConcept) {
 
 function displayOf(codeableConcept, fallback) {
   const coding = firstCoding(codeableConcept);
-  return (
-    coding?.display || codeableConcept?.text || fallback || "Non renseigné"
-  );
+  return coding?.display || codeableConcept?.text || fallback || "Non renseigné";
 }
 
 // ---------------------------------------------------------------------------
@@ -162,9 +134,7 @@ function renderClinicalView(bundle) {
   const patient = getResourcesByType(bundle, "Patient")[0];
 
   const patientName = patient?.name?.[0];
-  const fullName = patientName
-    ? `${(patientName.given || []).join(" ")} ${patientName.family || ""}`.trim()
-    : "Patient inconnu";
+  const fullName = patientName ? `${(patientName.given || []).join(" ")} ${patientName.family || ""}`.trim() : "Patient inconnu";
 
   let html = `
     <div class="clinical-block">
@@ -204,31 +174,22 @@ function renderClinicalRow(resource) {
       const detail = [
         resource.criticality ? `criticité : ${resource.criticality}` : null,
         reaction ? `réaction : ${displayOf(reaction)}` : null,
-      ]
-        .filter(Boolean)
-        .join(" — ");
+      ].filter(Boolean).join(" — ");
       return `<tr><td>${escapeXml(label)}</td><td>${escapeXml(detail || resource.clinicalStatus?.coding?.[0]?.code || "")}</td></tr>`;
     }
     case "Condition": {
       const label = displayOf(resource.code, "Problème non précisé");
-      const onset = resource.onsetDateTime
-        ? `depuis le ${resource.onsetDateTime}`
-        : "";
+      const onset = resource.onsetDateTime ? `depuis le ${resource.onsetDateTime}` : "";
       return `<tr><td>${escapeXml(label)}</td><td>${escapeXml(onset)}</td></tr>`;
     }
     case "MedicationStatement": {
-      const label = displayOf(
-        resource.medicationCodeableConcept,
-        "Traitement non précisé",
-      );
+      const label = displayOf(resource.medicationCodeableConcept, "Traitement non précisé");
       const dosage = resource.dosage?.[0]?.text || "";
       return `<tr><td>${escapeXml(label)}</td><td>${escapeXml(dosage)}</td></tr>`;
     }
     case "Immunization": {
       const label = displayOf(resource.vaccineCode, "Vaccin non précisé");
-      const date = resource.occurrenceDateTime
-        ? `administré le ${resource.occurrenceDateTime}`
-        : "";
+      const date = resource.occurrenceDateTime ? `administré le ${resource.occurrenceDateTime}` : "";
       return `<tr><td>${escapeXml(label)}</td><td>${escapeXml(date)}</td></tr>`;
     }
     default:
@@ -263,12 +224,7 @@ function renderResourcesView(bundle) {
 // ---------------------------------------------------------------------------
 
 function codeSystemInfo(system) {
-  return (
-    CODE_SYSTEMS[system] || {
-      oid: system || "2.16.840.1.113883.6.96",
-      name: system || "inconnu",
-    }
-  );
+  return CODE_SYSTEMS[system] || { oid: system || "2.16.840.1.113883.6.96", name: system || "inconnu" };
 }
 
 function cdaCodeElement(tag, codeableConcept, translation) {
@@ -320,12 +276,8 @@ function bundleToCda(bundle, alignment) {
   const composition = getComposition(bundle);
   const patient = getResourcesByType(bundle, "Patient")[0];
   const patientName = patient?.name?.[0];
-  const given = (patientName?.given || [])
-    .map((g) => `<given>${escapeXml(g)}</given>`)
-    .join("");
-  const family = patientName?.family
-    ? `<family>${escapeXml(patientName.family)}</family>`
-    : "";
+  const given = (patientName?.given || []).map((g) => `<given>${escapeXml(g)}</given>`).join("");
+  const family = patientName?.family ? `<family>${escapeXml(patientName.family)}</family>` : "";
 
   const sections = (composition?.section || [])
     .map((section) => {
@@ -387,11 +339,7 @@ function buildAlignmentMap(conceptMap) {
     for (const element of group.element || []) {
       const target = element.target?.[0];
       if (target) {
-        map.set(element.code, {
-          code: target.code,
-          display: target.display,
-          equivalence: target.equivalence,
-        });
+        map.set(element.code, { code: target.code, display: target.display, equivalence: target.equivalence });
       }
     }
   }
@@ -428,7 +376,7 @@ function renderTerminologyView(bundle, conceptMap) {
     ${warning}
     <table>
       <thead><tr><th>Code source (SNOMED CT — FHIR)</th><th>Code cible aligné (CIM-10 — via ConceptMap)</th><th>Statut</th></tr></thead>
-      <tbody>${rows || '<tr><td colspan="3">Aucun problème de santé dans ce résumé.</td></tr>'}</tbody>
+      <tbody>${rows || "<tr><td colspan=\"3\">Aucun problème de santé dans ce résumé.</td></tr>"}</tbody>
     </table>
   `;
 }
@@ -461,24 +409,14 @@ async function loadSummary() {
   btn.textContent = "Chargement...";
 
   try {
-    const bundle = await fhirFetch(
-      `/Patient/${encodeURIComponent(patientId)}/$summary`,
-    );
+    const bundle = await fhirFetch(`/Patient/${encodeURIComponent(patientId)}/$summary`);
 
-    if (
-      !bundle ||
-      bundle.resourceType !== "Bundle" ||
-      !(bundle.entry || []).length
-    ) {
-      throw new Error(
-        "Le résumé IPS renvoyé par le serveur est vide ou invalide pour ce patient.",
-      );
+    if (!bundle || bundle.resourceType !== "Bundle" || !(bundle.entry || []).length) {
+      throw new Error("Le résumé IPS renvoyé par le serveur est vide ou invalide pour ce patient.");
     }
     const composition = getComposition(bundle);
     if (!composition || !(composition.section || []).length) {
-      throw new Error(
-        "Le résumé IPS ne contient aucune section clinique exploitable pour ce patient.",
-      );
+      throw new Error("Le résumé IPS ne contient aucune section clinique exploitable pour ce patient.");
     }
 
     let conceptMap = null;
@@ -505,6 +443,9 @@ async function loadSummary() {
     showError(err.message);
     $("tabs").hidden = true;
     $("empty-state").hidden = false;
+    for (const id of ["tab-clinical", "tab-resources", "tab-cda", "tab-terminology"]) {
+      $(id).hidden = true;
+    }
   } finally {
     btn.disabled = false;
     btn.textContent = "Charger le résumé (IPS)";
@@ -525,9 +466,7 @@ function init() {
 
   $("download-cda-btn").addEventListener("click", () => {
     if (!state.bundle) return;
-    const blob = new Blob([$("cda-output").textContent], {
-      type: "application/xml",
-    });
+    const blob = new Blob([$("cda-output").textContent], { type: "application/xml" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
