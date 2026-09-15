@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Résumé médical du patient (IPS) — FHIR vers CDA</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Résumé médical du patient (IPS)</h1>
+  <p class="subtitle">Sujet E — Lecture d'un IPS sur un serveur FHIR réel, affichage métier et conversion vers CDA</p>
+</header>
+
+<main>
+  <section class="panel" id="query-panel">
+    <label for="patient-id">Identifiant patient FHIR (<code>Patient.id</code>)</label>
+    <div class="query-row">
+      <input type="text" id="patient-id" placeholder="ex : 138777192">
+      <button id="load-btn">Charger le résumé (IPS)</button>
+    </div>
+    <p class="hint">Serveur FHIR : <span id="fhir-base-label"></span> — opération appelée : <code>GET Patient/{id}/$summary</code></p>
+  </section>
+
+  <div id="error-banner" class="error-banner" hidden></div>
+
+  <details class="panel" id="exchange-log-panel">
+    <summary>Journal des échanges HTTP avec le serveur FHIR (traçabilité)</summary>
+    <table id="exchange-log-table">
+      <thead><tr><th>Heure</th><th>Méthode</th><th>URL</th><th>Statut</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </details>
+
+  <nav class="tabs" id="tabs" hidden>
+    <button class="tab-btn active" data-tab="clinical">Vue métier</button>
+    <button class="tab-btn" data-tab="resources">Ressources FHIR</button>
+    <button class="tab-btn" data-tab="cda">Document CDA</button>
+    <button class="tab-btn" data-tab="terminology">Alignement terminologique</button>
+  </nav>
+
+  <section class="tab-content" id="tab-clinical" hidden></section>
+
+  <section class="tab-content" id="tab-resources" hidden></section>
+
+  <section class="tab-content" id="tab-cda" hidden>
+    <div class="cda-toolbar">
+      <button id="download-cda-btn">Télécharger le CDA (.xml)</button>
+      <button id="copy-cda-btn">Copier le XML</button>
+    </div>
+    <pre id="cda-output" class="code-block"></pre>
+  </section>
+
+  <section class="tab-content" id="tab-terminology" hidden></section>
+
+  <p id="empty-state" class="empty-state">Saisissez un identifiant patient puis cliquez sur « Charger le résumé (IPS) ».</p>
+</main>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
