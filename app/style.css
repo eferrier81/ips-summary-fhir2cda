@@ -10,9 +10,9 @@
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
 
 body {
   margin: 0;
@@ -26,15 +26,8 @@ header {
   padding: 20px 32px;
 }
 
-header h1 {
-  margin: 0 0 4px 0;
-  font-size: 1.4rem;
-}
-.subtitle {
-  margin: 0;
-  opacity: 0.9;
-  font-size: 0.9rem;
-}
+header h1 { margin: 0 0 4px 0; font-size: 1.4rem; }
+.subtitle { margin: 0; opacity: 0.9; font-size: 0.9rem; }
 
 main {
   max-width: 960px;
@@ -50,12 +43,7 @@ main {
   margin-bottom: 16px;
 }
 
-.query-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-  flex-wrap: wrap;
-}
+.query-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
 
 #patient-id {
   flex: 1;
@@ -75,19 +63,10 @@ button {
   cursor: pointer;
   font-size: 0.95rem;
 }
-button:hover {
-  background: #08406f;
-}
-button:disabled {
-  background: #93a5b8;
-  cursor: not-allowed;
-}
+button:hover { background: #08406f; }
+button:disabled { background: #93a5b8; cursor: not-allowed; }
 
-.hint {
-  color: var(--muted);
-  font-size: 0.85rem;
-  margin: 10px 0 0 0;
-}
+.hint { color: var(--muted); font-size: 0.85rem; margin: 10px 0 0 0; }
 
 .error-banner {
   background: var(--error-bg);
@@ -105,31 +84,12 @@ button:disabled {
   color: var(--blue);
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  font-size: 0.85rem;
-}
-th,
-td {
-  text-align: left;
-  padding: 6px 8px;
-  border-bottom: 1px solid var(--border);
-}
-th {
-  color: var(--muted);
-  font-weight: 600;
-}
+table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 600; }
 
-.status-ok {
-  color: #1b7a3d;
-  font-weight: 600;
-}
-.status-error {
-  color: #b3261e;
-  font-weight: 600;
-}
+.status-ok { color: #1b7a3d; font-weight: 600; }
+.status-error { color: #b3261e; font-weight: 600; }
 
 .tabs {
   display: flex;
@@ -144,11 +104,7 @@ th {
   border-radius: 6px 6px 0 0;
   padding: 10px 16px;
 }
-.tab-btn.active {
-  background: var(--blue-light);
-  color: var(--blue);
-  font-weight: 600;
-}
+.tab-btn.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
 
 .tab-content {
   background: white;
@@ -157,18 +113,9 @@ th {
   padding: 20px;
 }
 
-.clinical-block {
-  margin-bottom: 22px;
-}
-.clinical-block h3 {
-  margin-bottom: 6px;
-  color: var(--blue);
-}
-.clinical-block .section-code {
-  color: var(--muted);
-  font-weight: normal;
-  font-size: 0.8rem;
-}
+.clinical-block { margin-bottom: 22px; }
+.clinical-block h3 { margin-bottom: 6px; color: var(--blue); }
+.clinical-block .section-code { color: var(--muted); font-weight: normal; font-size: 0.8rem; }
 
 .resource-card {
   border: 1px solid var(--border);
@@ -199,11 +146,7 @@ th {
   white-space: pre;
 }
 
-.cda-toolbar {
-  margin-bottom: 10px;
-  display: flex;
-  gap: 8px;
-}
+.cda-toolbar { margin-bottom: 10px; display: flex; gap: 8px; }
 
 .badge {
   display: inline-block;
@@ -212,20 +155,10 @@ th {
   font-size: 0.75rem;
   font-weight: 600;
 }
-.badge-mapped {
-  background: #e3f6e8;
-  color: #1b7a3d;
-}
-.badge-unmapped {
-  background: #fdecea;
-  color: #b3261e;
-}
+.badge-mapped { background: #e3f6e8; color: #1b7a3d; }
+.badge-unmapped { background: #fdecea; color: #b3261e; }
 
-.empty-state {
-  color: var(--muted);
-  text-align: center;
-  margin-top: 40px;
-}
+.empty-state { color: var(--muted); text-align: center; margin-top: 40px; }
 
 code {
   background: #eef2f7;
